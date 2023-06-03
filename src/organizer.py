@@ -1,11 +1,11 @@
-from config import load_config, Config
+from folder_config import load_config, FolderConfig
 from load_file import FileInfo
 from langchain.llms import OpenAI
 import dotenv
 import os
 import shutil
 
-def get_prompt(config:Config, file:FileInfo):
+def get_prompt(config:FolderConfig, file:FileInfo):
     return f"""The following contains the configuration of this folder:
 {config.description()}
 The following contains the information about the file:
@@ -13,7 +13,7 @@ The following contains the information about the file:
 Please choose a directory to move the file to:
 """
 
-def get_category(config:Config, file:FileInfo):
+def get_category(config:FolderConfig, file:FileInfo):
     dotenv.load_dotenv()
     llm = OpenAI()
     prompt = get_prompt(config, file)

@@ -1,8 +1,0 @@
-folders:
-  - media:
-    - img: "all images"
-    - video: "all videos"
-  - dev: "all dev files"
-  - docs:
-    - academic: "all academic docs"
-    - legal: "all legal docs"
