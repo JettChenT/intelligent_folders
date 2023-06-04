@@ -29,11 +29,13 @@ def load_config(path) -> FolderConfig:
 def load_dirs(data:list) -> List[Directory]:
     dirs = []
     for item in data:
-        item:dict
-        k,v = item.popitem()
-        if type(v) == str:
-            dirs.append(Directory(k,v))
-        elif type(v) == list:
-            for d in load_dirs(v):
-                dirs.append(Directory(k + '/' + d.path, d.description))
+        if type(item)==dict:
+            k,v = item.popitem()
+            if type(v) == str:
+                dirs.append(Directory(k,v))
+            elif type(v) == list:
+                for d in load_dirs(v):
+                    dirs.append(Directory(k + '/' + d.path, d.description))
+        elif type(item)==str:
+            dirs.append(Directory(item, item))
     return dirs
