@@ -44,22 +44,38 @@ class Handler(FileSystemEventHandler):
 
 
 
-if __name__ == "__main__":
+def run():
+    flag = True
     global_config = GlobalConfig()
     global_config.set_environs()
-    observers = []
-    observer = Observer()
-    for path in global_config.watch_dirs:
-        observer.schedule(Handler(path, global_config), path)
-        observers.append(observer)
-    observer.start()
-    try:
-        while True:
-            time.sleep(1)
-    except KeyboardInterrupt:
-        for o in observers:
-            o.unschedule_all()
-            o.stop()
+    while flag:
+        flag = False
+        observers = []
+        observer = Observer()
+        for path in global_config.watch_dirs:
+            observer.schedule(Handler(path, global_config), path)
+            observers.append(observer)
+        observer.start()
 
-    for o in observers:
-        o.join()
+        def stop_observers():
+            for o in observers:
+                o.unschedule_all()
+                o.stop()
+
+        try:
+            while True:
+                time.sleep(1)
+                if global_config.update_watch_dirs():
+                    # restart as the watch dirs have changed
+                    flag = True
+                    stop_observers()
+                    break
+        except KeyboardInterrupt:
+            stop_observers()
+
+        for o in observers:
+            o.join()
+
+
+if __name__ == "__main__":
+    run()

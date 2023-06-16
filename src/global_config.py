@@ -33,6 +33,19 @@ def get_watch_dirs():
     lines = open(loc).readlines()
     return [Path(l.strip()) for l in lines]
 
+def add_watch_dir(dir:Path):
+    loc = get_loc() / "watch_dirs.txt"
+    with open(loc, 'a') as f:
+        f.write(str(dir) + "\n")
+
+def remove_watch_dir(dir:Path):
+    loc = get_loc() / "watch_dirs.txt"
+    lines = open(loc).readlines()
+    lines = [l.strip() for l in lines]
+    lines.remove(str(dir))
+    with open(loc, 'w') as f:
+        f.write("\n".join(lines))
+
 class GlobalConfig:
     def __init__(self):
         # TODO: allow for more models in the future
@@ -47,6 +60,22 @@ class GlobalConfig:
         for k,v in self.openai_cfig.items():
             if os.environ.get(k) is None:
                 os.environ[k] = v
+    
+    def add_watch_dir(self, dir:Path):
+        """Add a directory to watch"""
+        self.watch_dirs.append(dir.resolve())
+        add_watch_dir(dir)
+    
+    def remove_watch_dir(self, dir:Path):
+        """Remove a directory from watch"""
+        self.watch_dirs.remove(dir.resolve())
+        remove_watch_dir(dir)
+    
+    def update_watch_dirs(self) -> bool:
+        """Update the watch directories"""
+        old = self.watch_dirs
+        self.watch_dirs = get_watch_dirs()
+        return old != self.watch_dirs
  
 
 if __name__ == "__main__":
