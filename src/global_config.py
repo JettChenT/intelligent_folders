@@ -7,7 +7,7 @@ import editor
 APP_NAME = "FORG"
 APP_AUTHOR = "JettChen"
 
-def get_loc():
+def get_loc() -> Path:
     path =  Path(platformdirs.user_config_dir(APP_NAME, APP_AUTHOR))
     if not path.exists():
         os.makedirs(path)
@@ -15,7 +15,7 @@ def get_loc():
 
 def get_config_loc():
     loc =  get_loc() / "config.yml"
-    print(loc)
+    # print(loc)
     if not loc.exists():
         print(f"Please insert your config file in {loc}")
         with open(loc, 'w') as f:
@@ -76,7 +76,10 @@ class GlobalConfig:
         old = self.watch_dirs
         self.watch_dirs = get_watch_dirs()
         return old != self.watch_dirs
+    
+    def get_app_path(self) -> Path:
+        return get_loc()
+    
+    def get_log_file(self, cat:str="") -> Path:
+        return (get_loc()/f"{cat}log.txt").resolve()
  
-
-if __name__ == "__main__":
-    print(get_config_loc())

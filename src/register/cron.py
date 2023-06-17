@@ -13,6 +13,9 @@ def get_command()->str:
 def gen_crontab():
     cron_expr = f"@reboot {get_command()}"
     cron = CronTab(user=True)
+    # if the cron_expr already exists, return false
+    if len(list(cron.find_command(get_command()))) > 0:
+        return False
     job = cron.new(command=get_command())
     job.setall("@reboot")
     cron.write()
