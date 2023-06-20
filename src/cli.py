@@ -96,6 +96,11 @@ def stop():
         typer.echo("Stoped service.")
 
 @app.command()
+def restart():
+    stop()
+    start()
+    
+@app.command()
 def print_loc():
     typer.echo(str(GlobalConfig().get_app_path()))
 
