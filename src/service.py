@@ -146,7 +146,7 @@ def run_file_organizer():
         try:
             while True:
                 time.sleep(1)
-                if dirs_modified.isSet():
+                if dirs_modified.is_set():
                     # restart as the watch dirs have changed
                     flag = True
                     stop_observers()
